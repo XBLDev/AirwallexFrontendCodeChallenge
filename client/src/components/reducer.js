@@ -18,19 +18,12 @@ const initialState = {
     userFullName : '',
     userEmail: '',
     EmailConfirmation: '',
-    errorMsg: '',
-
-    // emailsSame: false,
-    // emailFormatValid: false,
-    // userNameFormatValid: false,
-    
+    errorMsg: '',    
     sendingMsg: '',
-    serverReturned: false
+    serverReturnedSuccess: false
 }
 
-// let err = '';
-// let send = '';
-// let returned = false;
+
 
 export default (state = initialState, action) => {
   switch (action.type) {
@@ -43,7 +36,7 @@ export default (state = initialState, action) => {
           ...state,
           sendingMsg: '',
           errorMsg: '',
-          serverReturned: true,
+          serverReturnedSuccess: true,
         }       
       }
       else{
@@ -51,15 +44,9 @@ export default (state = initialState, action) => {
           ...state,
           sendingMsg: '',
           errorMsg: action.value,
-          // serverReturned: true,
         }      
       }
-      // return {
-      //   ...state,
-      //   sendingMsg: '',
-      //   errorMsg: '',
-      //   serverReturned: true,
-      // }       
+
     case SEND_USERINFORMATION:
       if(state.sendingMsg == '')
       {
@@ -70,46 +57,10 @@ export default (state = initialState, action) => {
       }
       else
       {
-        // var err = '';
-        // var send = '';
-        // var returned = false;
-        // console.log('SEND_USERINFORMATION: CHECK_USERINFORMATION PASSED, WAITING FOR SERVER...');
-        // const xhr = new XMLHttpRequest();
-        // xhr.open('POST', 'https://l94wc2001h.execute-api.ap-southeast-2.amazonaws.com/prod/fake-auth');
-        // xhr.setRequestHeader("Content-Type", "application/json");
-
-        // xhr.onreadystatechange = function () {
-
-        //   if (xhr.readyState == XMLHttpRequest.DONE && xhr.status === 200) 
-        //   {
-        //       console.log('SEND_USERINFORMATION: GOOD SERVER RESPONSE: ',xhr.responseText);
-        //       returned = true;    
-        //   }
-        //   if(xhr.readyState == XMLHttpRequest.DONE && xhr.status === 400)
-        //   {
-        //     console.log('SEND_USERINFORMATION: BAD SERVER RESPONSE', xhr.responseText);
-        //     send = '';
-        //     err = JSON.parse(xhr.responseText);
-        //   }
-        // };
-
-        // xhr.addEventListener('load', () => {
-        // if (xhr.status === 200) 
-        // {
-        //     console.log('SEND_USERINFORMATION: GOOD SERVER RESPONSE: ',xhr.response);
-        //     returned = true;    
-        // }
-        // if(xhr.status === 400)
-        // {
-        //   console.log('SEND_USERINFORMATION: BAD SERVER RESPONSE', xhr.response);
-        //   send = '';
-        //   err = JSON.parse(xhr.response).errorMessage;
-        // }
-        // });        
-        xhr.send(JSON.stringify({name: state.userFullName, email: state.userEmail}));
+        // xhr.send(JSON.stringify({name: state.userFullName, email: state.userEmail}));
+        action.value.send(JSON.stringify({name: state.userFullName, email: state.userEmail}));
         return {
           ...state,
-
         }        
       } 
 
@@ -179,7 +130,7 @@ export default (state = initialState, action) => {
     case SHOW_POPUP:
       return {
           ...state,
-          serverReturned: false,
+          serverReturnedSuccess: false,
           errorMsg: '',
           sendingMsg: '',
           userFullName: '',
@@ -248,8 +199,7 @@ export const setconfirmationemail = (value) => {
 }
 
 
-let xhr = new XMLHttpRequest();
-let successMessage = 'success';
+
 
 export const senduserinformation = () => {
   return dispatch => 
@@ -258,15 +208,8 @@ export const senduserinformation = () => {
       type: CHECK_USERINFORMATION
     })
 
-    // dispatch({
-    //   type: SEND_USERINFORMATION
-    // })
-
-    // dispatch({
-    //   type: PROCESS_REQUESTRESULT
-    // })
-
-    // const xhr = new XMLHttpRequest();
+    let xhr = new XMLHttpRequest();
+    let successMessage = 'success';
     xhr.open('POST', 'https://l94wc2001h.execute-api.ap-southeast-2.amazonaws.com/prod/fake-auth');
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.addEventListener('load', () => {
@@ -290,7 +233,8 @@ export const senduserinformation = () => {
         });        
  
     dispatch({
-      type: SEND_USERINFORMATION
+      type: SEND_USERINFORMATION,
+      value: xhr
     })        
     // xhr.send(JSON.stringify({name: state.userFullName, email: state.userEmail}));    
 

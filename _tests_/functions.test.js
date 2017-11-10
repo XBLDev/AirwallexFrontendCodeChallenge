@@ -14,6 +14,7 @@ const functions = require('../client/src/components/functions');
 const checkIfEmailsAreSame = functions.checkIfEmailsAreSame;
 const checkIfEmailsValid = functions.checkIfEmailsValid;
 const checkIfNameValid = functions.checkIfNameValid;
+const sendRequest = functions.sendRequest;
 
 
 test('functions test', () => {
@@ -35,5 +36,9 @@ test('functions test', () => {
     expect(checkIfNameValid('somename')).toBe(true);
     expect(checkIfNameValid('som')).toBe(true);
     expect(checkIfNameValid('sn')).toBe(false);
+
+    //This XMLRequest is a bit difficult to test.
+    // expect(sendRequest('abc', 'someuser@gmail.com')).toBe(true);
+
 
 });

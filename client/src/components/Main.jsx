@@ -36,7 +36,7 @@ class Main extends React.Component {
             </div>
     
             <div id="myModal" className={this.props.popUpShowing == true? 'modal':'modalNotShowing'}>
-              {this.props.serverReturned == false?( 
+              {this.props.serverReturnedSuccess == false?( 
               <div className="modal-content">
                  
                 <span className="close" onClick={this.props.quitpopup}>&times;</span>
@@ -77,7 +77,7 @@ class Main extends React.Component {
 
 const mapStateToProps = state => ({
   popUpShowing: state.reducer.popUpShowing,
-  serverReturned: state.reducer.serverReturned,
+  serverReturnedSuccess: state.reducer.serverReturnedSuccess,
   errorMsg: state.reducer.errorMsg,
   sendingMsg: state.reducer.sendingMsg,
   

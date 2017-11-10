@@ -2073,19 +2073,10 @@ var initialState = {
   userEmail: '',
   EmailConfirmation: '',
   errorMsg: '',
-
-  // emailsSame: false,
-  // emailFormatValid: false,
-  // userNameFormatValid: false,
-
   sendingMsg: '',
-  serverReturned: false
-
-  // let err = '';
-  // let send = '';
-  // let returned = false;
-
+  serverReturnedSuccess: false
 };
+
 exports.default = function () {
   var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : initialState;
   var action = arguments[1];
@@ -2098,63 +2089,22 @@ exports.default = function () {
         return _extends({}, state, {
           sendingMsg: '',
           errorMsg: '',
-          serverReturned: true
+          serverReturnedSuccess: true
         });
       } else {
         return _extends({}, state, {
           sendingMsg: '',
           errorMsg: action.value
-          // serverReturned: true,
         });
       }
-    // return {
-    //   ...state,
-    //   sendingMsg: '',
-    //   errorMsg: '',
-    //   serverReturned: true,
-    // }       
+
     case SEND_USERINFORMATION:
       if (state.sendingMsg == '') {
         console.log('SEND_USERINFORMATION: CHECK_USERINFORMATION FAILED');
         return _extends({}, state);
       } else {
-        // var err = '';
-        // var send = '';
-        // var returned = false;
-        // console.log('SEND_USERINFORMATION: CHECK_USERINFORMATION PASSED, WAITING FOR SERVER...');
-        // const xhr = new XMLHttpRequest();
-        // xhr.open('POST', 'https://l94wc2001h.execute-api.ap-southeast-2.amazonaws.com/prod/fake-auth');
-        // xhr.setRequestHeader("Content-Type", "application/json");
-
-        // xhr.onreadystatechange = function () {
-
-        //   if (xhr.readyState == XMLHttpRequest.DONE && xhr.status === 200) 
-        //   {
-        //       console.log('SEND_USERINFORMATION: GOOD SERVER RESPONSE: ',xhr.responseText);
-        //       returned = true;    
-        //   }
-        //   if(xhr.readyState == XMLHttpRequest.DONE && xhr.status === 400)
-        //   {
-        //     console.log('SEND_USERINFORMATION: BAD SERVER RESPONSE', xhr.responseText);
-        //     send = '';
-        //     err = JSON.parse(xhr.responseText);
-        //   }
-        // };
-
-        // xhr.addEventListener('load', () => {
-        // if (xhr.status === 200) 
-        // {
-        //     console.log('SEND_USERINFORMATION: GOOD SERVER RESPONSE: ',xhr.response);
-        //     returned = true;    
-        // }
-        // if(xhr.status === 400)
-        // {
-        //   console.log('SEND_USERINFORMATION: BAD SERVER RESPONSE', xhr.response);
-        //   send = '';
-        //   err = JSON.parse(xhr.response).errorMessage;
-        // }
-        // });        
-        xhr.send(JSON.stringify({ name: state.userFullName, email: state.userEmail }));
+        // xhr.send(JSON.stringify({name: state.userFullName, email: state.userEmail}));
+        action.value.send(JSON.stringify({ name: state.userFullName, email: state.userEmail }));
         return _extends({}, state);
       }
 
@@ -2208,7 +2158,7 @@ exports.default = function () {
       }
     case SHOW_POPUP:
       return _extends({}, state, {
-        serverReturned: false,
+        serverReturnedSuccess: false,
         errorMsg: '',
         sendingMsg: '',
         userFullName: '',
@@ -2265,24 +2215,14 @@ var setconfirmationemail = exports.setconfirmationemail = function setconfirmati
   };
 };
 
-var xhr = new XMLHttpRequest();
-var successMessage = 'success';
-
 var senduserinformation = exports.senduserinformation = function senduserinformation() {
   return function (dispatch) {
     dispatch({
       type: CHECK_USERINFORMATION
     });
 
-    // dispatch({
-    //   type: SEND_USERINFORMATION
-    // })
-
-    // dispatch({
-    //   type: PROCESS_REQUESTRESULT
-    // })
-
-    // const xhr = new XMLHttpRequest();
+    var xhr = new XMLHttpRequest();
+    var successMessage = 'success';
     xhr.open('POST', 'https://l94wc2001h.execute-api.ap-southeast-2.amazonaws.com/prod/fake-auth');
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.addEventListener('load', function () {
@@ -2304,7 +2244,8 @@ var senduserinformation = exports.senduserinformation = function senduserinforma
     });
 
     dispatch({
-      type: SEND_USERINFORMATION
+      type: SEND_USERINFORMATION,
+      value: xhr
     });
     // xhr.send(JSON.stringify({name: state.userFullName, email: state.userEmail}));    
 
@@ -23111,7 +23052,7 @@ var Main = function (_React$Component) {
           _react2.default.createElement(
             'div',
             { id: 'myModal', className: this.props.popUpShowing == true ? 'modal' : 'modalNotShowing' },
-            this.props.serverReturned == false ? _react2.default.createElement(
+            this.props.serverReturnedSuccess == false ? _react2.default.createElement(
               'div',
               { className: 'modal-content' },
               _react2.default.createElement(
@@ -23186,7 +23127,7 @@ var Main = function (_React$Component) {
 var mapStateToProps = function mapStateToProps(state) {
   return {
     popUpShowing: state.reducer.popUpShowing,
-    serverReturned: state.reducer.serverReturned,
+    serverReturnedSuccess: state.reducer.serverReturnedSuccess,
     errorMsg: state.reducer.errorMsg,
     sendingMsg: state.reducer.sendingMsg
 
