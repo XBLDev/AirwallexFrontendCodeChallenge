@@ -1,6 +1,11 @@
 # AirwallexFrontendCodeChallenge
 Airwallex - Frontend Code Challenge
 
+Comment 4:32, 10/11/17:
+
+Redux state tests for one app life cycle finished, the XMLHttpRequest parts are 
+not properly tested I think.
+
 Comment 3:17, 10/11/17:
 
 Redux version of this chanllenge is done, some parts of it feel a bit weird
