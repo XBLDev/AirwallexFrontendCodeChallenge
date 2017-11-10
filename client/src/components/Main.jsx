@@ -54,7 +54,7 @@ class Main extends React.Component {
               (
                 <div className="modal-content">
                   <h2>All Done!</h2><br/>
-                  <button  className="inviteBtn">OK</button>
+                  <button  className="inviteBtn" onClick={this.props.quitpopup}>OK</button>
                 </div>    
               )
               }

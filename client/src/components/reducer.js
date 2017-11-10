@@ -28,20 +28,38 @@ const initialState = {
     serverReturned: false
 }
 
-let err = '';
-let send = '';
-let returned = false;
+// let err = '';
+// let send = '';
+// let returned = false;
 
 export default (state = initialState, action) => {
   switch (action.type) {
 
     case PROCESS_REQUESTRESULT: 
-      return {
-        ...state,
-        sendingMsg: send,
-        errorMsg: err,
-        serverReturned: returned,
-      }       
+      console.log('PROCESS_REQUESTRESULT: VALUE: ', action.value);
+      if(action.value == 'success')
+      {
+        return {
+          ...state,
+          sendingMsg: '',
+          errorMsg: '',
+          serverReturned: true,
+        }       
+      }
+      else{
+        return {
+          ...state,
+          sendingMsg: '',
+          errorMsg: action.value,
+          // serverReturned: true,
+        }      
+      }
+      // return {
+      //   ...state,
+      //   sendingMsg: '',
+      //   errorMsg: '',
+      //   serverReturned: true,
+      // }       
     case SEND_USERINFORMATION:
       if(state.sendingMsg == '')
       {
@@ -52,13 +70,13 @@ export default (state = initialState, action) => {
       }
       else
       {
-        var err = '';
-        var send = '';
-        var returned = false;
-        console.log('SEND_USERINFORMATION: CHECK_USERINFORMATION PASSED, WAITING FOR SERVER...');
-        const xhr = new XMLHttpRequest();
-        xhr.open('POST', 'https://l94wc2001h.execute-api.ap-southeast-2.amazonaws.com/prod/fake-auth');
-        xhr.setRequestHeader("Content-Type", "application/json");
+        // var err = '';
+        // var send = '';
+        // var returned = false;
+        // console.log('SEND_USERINFORMATION: CHECK_USERINFORMATION PASSED, WAITING FOR SERVER...');
+        // const xhr = new XMLHttpRequest();
+        // xhr.open('POST', 'https://l94wc2001h.execute-api.ap-southeast-2.amazonaws.com/prod/fake-auth');
+        // xhr.setRequestHeader("Content-Type", "application/json");
 
         // xhr.onreadystatechange = function () {
 
@@ -75,45 +93,24 @@ export default (state = initialState, action) => {
         //   }
         // };
 
-        xhr.addEventListener('load', () => {
-        if (xhr.status === 200) 
-        {
-            console.log('SEND_USERINFORMATION: GOOD SERVER RESPONSE: ',xhr.response);
-            returned = true;    
-        }
-        if(xhr.status === 400)
-        {
-          console.log('SEND_USERINFORMATION: BAD SERVER RESPONSE', xhr.response);
-          send = '';
-          err = JSON.parse(xhr.response).errorMessage;
-        }
-        });        
+        // xhr.addEventListener('load', () => {
+        // if (xhr.status === 200) 
+        // {
+        //     console.log('SEND_USERINFORMATION: GOOD SERVER RESPONSE: ',xhr.response);
+        //     returned = true;    
+        // }
+        // if(xhr.status === 400)
+        // {
+        //   console.log('SEND_USERINFORMATION: BAD SERVER RESPONSE', xhr.response);
+        //   send = '';
+        //   err = JSON.parse(xhr.response).errorMessage;
+        // }
+        // });        
         xhr.send(JSON.stringify({name: state.userFullName, email: state.userEmail}));
-        // return {
-        //   ...state,
-        //   // sendingMsg: send,
-        //   // errorMsg: err,
-        //   // serverReturned: returned,
-        // }       
-        // var requestResult = sendRequest(state.userFullName, state.userEmail);
-        // if(requestResult == 'succeed')
-        // {
-        //   console.log('SEND_USERINFORMATION: REQUEST SUCCEED');
-        //   return {
-        //   ...state,
-        //   serverReturned: true
-        //   }                       
-        // }
-        // else
-        // {
-        //   console.log('SEND_USERINFORMATION: REQUEST FAILED: ', requestResult);
+        return {
+          ...state,
 
-        //   return {
-        //   ...state,
-        //   sendingMsg: '',
-        //   errorMsg: requestResult
-        //   }            
-        // }
+        }        
       } 
 
     case CHECK_USERINFORMATION:
@@ -167,11 +164,18 @@ export default (state = initialState, action) => {
       }    
 
     case QUIT_POPUP:
-      return {
-        ...state,
-        popUpShowing : false,
+      if(state.popUpShowing == true)
+      {
+        return {
+          ...state,
+          popUpShowing : false,
+        }
       }
-
+      else{
+        return {
+          ...state,
+        }
+      }
     case SHOW_POPUP:
       return {
           ...state,
@@ -243,6 +247,10 @@ export const setconfirmationemail = (value) => {
   }
 }
 
+
+let xhr = new XMLHttpRequest();
+let successMessage = 'success';
+
 export const senduserinformation = () => {
   return dispatch => 
   {
@@ -250,13 +258,44 @@ export const senduserinformation = () => {
       type: CHECK_USERINFORMATION
     })
 
+    // dispatch({
+    //   type: SEND_USERINFORMATION
+    // })
+
+    // dispatch({
+    //   type: PROCESS_REQUESTRESULT
+    // })
+
+    // const xhr = new XMLHttpRequest();
+    xhr.open('POST', 'https://l94wc2001h.execute-api.ap-southeast-2.amazonaws.com/prod/fake-auth');
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.addEventListener('load', () => {
+        if (xhr.status === 200) 
+        {
+            console.log('SEND_USERINFORMATION: GOOD SERVER RESPONSE: ',xhr.response);
+            dispatch({
+              type: PROCESS_REQUESTRESULT,
+              value: successMessage
+            })
+        }
+        if(xhr.status === 400)
+        {
+          console.log('SEND_USERINFORMATION: BAD SERVER RESPONSE', xhr.response);
+          var errmsg = JSON.parse(xhr.response).errorMessage;
+          dispatch({
+              type: PROCESS_REQUESTRESULT,
+              value: errmsg         
+          })
+        }
+        });        
+ 
     dispatch({
       type: SEND_USERINFORMATION
-    })
+    })        
+    // xhr.send(JSON.stringify({name: state.userFullName, email: state.userEmail}));    
 
-    dispatch({
-      type: PROCESS_REQUESTRESULT
-    })
+
+
 
   }
 }

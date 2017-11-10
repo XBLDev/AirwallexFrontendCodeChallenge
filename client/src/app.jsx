@@ -7,12 +7,12 @@ import { Provider } from 'react-redux'
 import store, { history } from './components/store'
 
 
-ReactDom.render((
-        <App/>
-), document.getElementById('react-app'));
-
 // ReactDom.render((
-//         <Provider store={store}>
-//                 <Main/>
-//         </Provider>
+//         <App/>
 // ), document.getElementById('react-app'));
+
+ReactDom.render((
+        <Provider store={store}>
+                <Main/>
+        </Provider>
+), document.getElementById('react-app'));
